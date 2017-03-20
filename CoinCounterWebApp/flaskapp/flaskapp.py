@@ -8,8 +8,8 @@ import boto3
 
 app = Flask(__name__)
 
-testImageUrl = "https://s3.amazonaws.com/mms-image-ingest/incoming/17037727371/coins2.png"
-s3BucketUrl = "https://s3.amazonaws.com/mms-image-ingest/incoming/17037727371/{0}"
+testImageUrl = "https://s3.amazonaws.com/mms-image-ingest/incoming/telephone-number/coins2.png"
+s3BucketUrl = "https://s3.amazonaws.com/mms-image-ingest/incoming/telephone-number/{0}"
 
 @app.route('/')
 def usage():
@@ -96,8 +96,8 @@ def process_image(image_url):
 
 def send_sms(message):
     client.messages.create(
-        to = "+17037727371",
-        from_= "+17037214313",
+        to = "+telephone-number",
+        from_= "+telephone-number",
     	body=message)
     print "SMS Message sent"
 
