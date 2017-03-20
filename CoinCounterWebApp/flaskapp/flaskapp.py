@@ -42,8 +42,8 @@ coin_diameter_values = np.array([
 [ 24.26, 0.25]]);
 
 # put your Twilio credentials here
-ACCOUNT_SID = "AC5b23c14c5a925dc412eac706b13c6189"
-AUTH_TOKEN = "719b6fbcb75e95896c5ceb1a6c1b483b"
+ACCOUNT_SID = "---"
+AUTH_TOKEN = "----"
 
 client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 s3 = boto3.client('s3')
@@ -119,4 +119,3 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
   app.run()
-
