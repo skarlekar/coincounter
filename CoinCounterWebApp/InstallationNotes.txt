@@ -79,3 +79,15 @@ Recursively change the permissions for files in the /var/www directory and its s
 
 Link the flaskapp directory to /var/www/html
 sudo ln -sT ~/flaskapp /var/www/html/flaskapp
+
+Add the following to /etc/httpd/conf/httpd.conf:
+#
+# flaskapp
+#
+#WSGIDaemonProcess threads=5 home=/var/www/html/flaskapp/
+WSGIScriptAlias /flaskapp /var/www/html/flaskapp/flaskapp.wsgi
+<Directory /var/www/html/flaskapp>
+    WSGIApplicationGroup %{GLOBAL}
+    Order allow,deny
+    Allow from all
+</Directory>

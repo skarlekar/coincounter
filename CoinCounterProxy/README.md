@@ -1,0 +1,2 @@
+# CoinCounterProxy
+Lambda function that is triggered when an image of coin is stored in S3. This function calls the CoinCounterWebApp to calculate the value of coins and sends the result back to the called telephone number.
