@@ -1,0 +1,81 @@
+Notes for installing SimpleCV dependencies on a new EC2 amzn-ami-hvm-2016.03.3.x86_64-gp2 AMI instance
+
+scp -i ~/AWS/PEM/python-preparer.pem lambda_function.py ec2-user@54.83.254.124:~
+
+ssh -i ~/AWS/PEM/python-preparer.pem ec2-user@54.83.254.124
+
+
+2  sudo yum update
+3  sudo yum install python27-devel python27-pip gcc libjpeg-devel zlib-devel
+4  virtualenv ~/shrink_venv
+5  source ~/shrink_venv/bin/activate
+8  pip install --upgrade pip
+12  pip install numpy scipy nose
+   13  pip install pygame
+   14  pip install pillow==2.9
+   15  pip install twilio
+   16  history
+   17  pip install boto3
+
+
+Copy cv2.so & cv.py from local to the EC2 instance. Note: these files were compiled from source in another
+EC2 instance made from the same AMI. See separate notes for that in cv_generation_notes.txt
+
+scp -i ~/AWS/PEM/python-preparer.pem ./cv* ec2-user@54.83.254.124:~/shrink_venv/lib/python2.7/site-packages
+
+Copy all /usr/local/lib/libopencv_*.so.2.4 libraries to ~/shrink_venv/lib
+
+
+Installing Apache:
+sudo yum install -y httpd24
+
+Install wsgi:
+sudo yum install mod24_wsgi-python27
+
+Start the webserver:
+sudo service httpd start
+
+Add ec2-user and group www to the http config file:
+sudo vi /etc/httpd/conf/httpd.conf
+
+Start the web-server when the instance restarts
+sudo chkconfig httpd on
+
+Webserver log can be tailed here:
+sudo tail -f /var/log/httpd/error_log
+
+http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.CreateWebServer.html
+To set file permissions for the Apache web server
+
+Add the www group to your EC2 instance with the following command:
+
+[ec2-user ~]$ sudo groupadd www
+
+Add the ec2-user user to the www group:
+
+[ec2-user ~]$ sudo usermod -a -G www ec2-user
+
+To refresh your permissions and include the new www group, log out:
+
+[ec2-user ~]$ exit
+
+Log back in again and verify that the www group exists with the groups command:
+
+[ec2-user ~]$ groups
+ec2-user wheel www
+
+Change the group ownership of the /var/www directory and its contents to the www group:
+
+[ec2-user ~]$ sudo chown -R root:www /var/www
+
+Change the directory permissions of /var/www and its subdirectories to add group write permissions and set the group ID on subdirectories created in the future:
+
+[ec2-user ~]$ sudo chmod 2775 /var/www
+[ec2-user ~]$ find /var/www -type d -exec sudo chmod 2775 {} +
+
+Recursively change the permissions for files in the /var/www directory and its subdirectories to add group write permissions:
+
+[ec2-user ~]$ find /var/www -type f -exec sudo chmod 0664 {} +
+
+Link the flaskapp directory to /var/www/html
+sudo ln -sT ~/flaskapp /var/www/html/flaskapp
